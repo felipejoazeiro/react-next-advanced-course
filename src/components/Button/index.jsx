@@ -1,11 +1,12 @@
 import { Component } from "react";
+import './styles.css'
 
 export class Button extends Component {
 
     render(){
-        const {text, onClick} = this.props
+        const {text, onClick, disabled} = this.props
         return(
-            <button onClick={onClick}>{text}</button>
+            <button disabled={disabled} onClick={onClick} className="button">{text} </button>
         );
 
     }
