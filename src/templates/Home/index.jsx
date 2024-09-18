@@ -3,13 +3,15 @@ import { Component } from 'react';
 import { loadPosts } from '../../utils/load-post';
 import { Posts } from '../../components/Posts';
 import { Button } from '../../components/Button';
+import { TextInput } from '../../components/TextInput';
 
 class Home extends Component{
     state = {
       posts: [],
       allPosts: [],
       page: 0,
-      postsPerPage: 2
+      postsPerPage: 2,
+      searchValue: ''
     }
 
   // Monta os dados após uma atualização
@@ -47,14 +49,30 @@ class Home extends Component{
   // Após sair da tela os dados são desmontados para impedir que algo que n esteja na tela continue sendo carregado por trás dos panos
   componentWillUnmount(){}
 
+  handleChange = (e)=>{
+    const {value} = e.target;
+    this.setState({searchValue: value});
+  }
+  
   render(){
 
-    const {posts, page, postsPerPage, allPosts} = this.state;
+    const {posts, page, postsPerPage, allPosts, searchValue} = this.state;
     const noMorePosts = page + postsPerPage >= allPosts.length;
+
+    const filteredPosts = !!searchValue ? allPosts.filter(post => {
+      return post.title.toLowerCase().includes(searchValue.toLowerCase())
+    }): posts;
 
     return (
       <section className='container'>
-        <Posts posts={posts} />
+        <div className="search-container">
+
+          {!!searchValue && (
+            <h1>Search value: {searchValue}</h1>
+          )}  
+          <TextInput searchValue={searchValue} handleChange={this.handleChange}/>
+        </div>
+        <Posts posts={filteredPosts} />
         <div className="button-container">
           <Button 
             text="Load more posts"
